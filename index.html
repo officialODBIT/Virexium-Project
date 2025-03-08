@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChromeOS Style UI</title>
+  <title>Virexium Project</title>
+  <link rel="icon" href="https://i.imgur.com/wWQQWAc.png">
   <style>
     /* Global Styles */
     body {
       margin: 0;
       padding: 0;
-      background-color: #fafafa;
+      background-image: url('https://i.imgur.com/8tcxHWh.jpeg');
+      background-size: cover;
       font-family: Arial, sans-serif;
       overflow: hidden;
+      color: #fff;
     }
 
     /* Taskbar */
@@ -21,7 +24,7 @@
       left: 0;
       width: 100%;
       height: 48px;
-      background-color: #333;
+      background-color: rgba(0, 0, 0, 0.7);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -29,12 +32,31 @@
       z-index: 100;
     }
 
-    #taskbar .taskbar-left, #taskbar .taskbar-right {
+    .taskbar-center {
       display: flex;
+      justify-content: center;
       align-items: center;
     }
 
-    #taskbar .taskbar-left button, #taskbar .taskbar-right button {
+    .taskbar-right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .taskbar-left {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .taskbar-right div {
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+    }
+
+    .taskbar-left button, .taskbar-right button {
       background-color: transparent;
       border: none;
       padding: 10px;
@@ -43,38 +65,36 @@
       font-size: 16px;
     }
 
-    #taskbar button:hover {
-      background-color: #555;
-      border-radius: 5px;
-    }
-
-    #taskbar .taskbar-left button img, #taskbar .taskbar-right button img {
+    .taskbar-left button img, .taskbar-right button img {
       width: 24px;
       height: 24px;
     }
 
-    /* Start Menu */
     #startMenu {
       position: absolute;
       bottom: 60px;
-      left: 10px;
-      background-color: #444;
-      width: 220px;
-      border-radius: 8px;
+      left: 0;
+      background-color: #333;
+      width: 100%;
+      height: 100%;
+      z-index: 2000;
       display: none;
-      padding: 10px;
-      z-index: 1000;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding-top: 50px;
+      color: white;
     }
 
     #startMenu button {
-      background-color: #333;
+      background-color: #444;
       color: white;
-      width: 100%;
-      padding: 12px;
+      width: 80%;
+      padding: 15px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      margin-bottom: 10px;
       cursor: pointer;
-      margin-bottom: 8px;
       text-align: left;
     }
 
@@ -82,29 +102,26 @@
       background-color: #555;
     }
 
-    /* Window Styles */
     .window {
       width: 400px;
       height: 300px;
-      background-color: white;
-      color: black;
+      background-color: #222;
+      color: #fff;
       position: absolute;
       top: 50px;
       left: 50%;
       transform: translateX(-50%);
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
       border-radius: 5px;
       display: none;
-      z-index: 2000;
-      overflow: hidden;
-      display: none;
+      z-index: 10000;
+      padding: 10px;
     }
 
     .window-header {
       background-color: #333;
       color: white;
       padding: 10px;
-      cursor: move;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -116,31 +133,104 @@
       overflow-y: auto;
     }
 
-    .close-btn {
+    .close-btn, .minimize-btn {
       background: none;
       color: white;
       border: none;
       cursor: pointer;
     }
 
-    .close-btn:hover {
+    .close-btn:hover, .minimize-btn:hover {
       color: red;
     }
 
-    /* Draggable Windows */
-    .draggable {
-      cursor: move;
+    .window-header button {
+      font-size: 16px;
+      background-color: transparent;
+      cursor: pointer;
+      color: white;
     }
 
-    /* Apps */
-    #taskManagerWindow, #calculatorWindow {
-      width: 300px;
+    /* Settings App */
+    #settingsWindow {
+      width: 500px;
+      height: 400px;
+      background-color: #333;
+      color: white;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      z-index: 2000;
+      display: none;
     }
 
-    /* Icons in Taskbar */
-    .taskbar-left button img {
-      width: 24px;
-      height: 24px;
+    .settings-header {
+      background-color: #444;
+      color: white;
+      padding: 10px;
+      font-size: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .settings-header button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .settings-content {
+      padding: 20px;
+    }
+
+    .settings-content input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #444;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 5px;
+    }
+
+    .settings-content button {
+      width: 100%;
+      padding: 12px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .settings-content button:hover {
+      background-color: #666;
+    }
+
+    /* Date/Time & Keyboard Layout */
+    .taskbar-right div span {
+      margin-left: 10px;
+      color: white;
+    }
+
+    .taskbar-right div .date {
+      margin-right: 10px;
+    }
+
+    /* Mobile-like Settings App */
+    .settings-app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
     }
 
   </style>
@@ -151,27 +241,49 @@
   <div id="taskbar">
     <div class="taskbar-left">
       <button id="startBtn"><img src="https://i.imgur.com/your-icon-link.png" alt="Start Menu"></button>
-      <button id="taskManagerBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/task.png" alt="Task Manager"></button>
-      <button id="calculatorBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/calculator.png" alt="Calculator"></button>
+    </div>
+    <div class="taskbar-center">
+      <button><img src="https://img.icons8.com/ios-filled/50/ffffff/app.png" alt="Apps"></button>
+      <button><img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="Settings"></button>
     </div>
     <div class="taskbar-right">
-      <button id="networkBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/network.png" alt="Network"></button>
-      <button id="batteryBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/battery.png" alt="Battery"></button>
-      <button id="clockBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/clock.png" alt="Clock"></button>
+      <div class="date">
+        <span id="date"></span>
+      </div>
+      <div class="time">
+        <span id="time"></span>
+      </div>
+      <div class="keyboard-layout">
+        <span>US</span>
+      </div>
     </div>
   </div>
 
   <!-- Start Menu -->
   <div id="startMenu">
+    <button onclick="openWindow('settingsWindow')">Settings</button>
     <button onclick="openWindow('taskManagerWindow')">Task Manager</button>
     <button onclick="openWindow('calculatorWindow')">Calculator</button>
-    <button onclick="openWindow('settingsWindow')">Settings</button>
-    <!-- Add more buttons for apps here -->
+    <button onclick="openWindow('notesWindow')">Notes</button>
+    <button onclick="openWindow('fileExplorerWindow')">File Explorer</button>
+  </div>
+
+  <!-- Settings Window -->
+  <div id="settingsWindow" class="window">
+    <div class="settings-header">
+      <span>Settings</span>
+      <button class="close-btn" onclick="closeWindow('settingsWindow')">X</button>
+    </div>
+    <div class="settings-content">
+      <label for="changeTabName">Change Tab Name</label>
+      <input type="text" id="changeTabName" placeholder="New Tab Name">
+      <button onclick="changeTabName()">Change Tab Name</button>
+    </div>
   </div>
 
   <!-- Task Manager Window -->
   <div id="taskManagerWindow" class="window">
-    <div class="window-header draggable">
+    <div class="window-header">
       <span>Task Manager</span>
       <button class="close-btn" onclick="closeWindow('taskManagerWindow')">X</button>
     </div>
@@ -186,7 +298,7 @@
 
   <!-- Calculator Window -->
   <div id="calculatorWindow" class="window">
-    <div class="window-header draggable">
+    <div class="window-header">
       <span>Calculator</span>
       <button class="close-btn" onclick="closeWindow('calculatorWindow')">X</button>
     </div>
@@ -205,80 +317,59 @@
       <button onclick="calcButton('9')">9</button>
       <button onclick="calcButton('*')">*</button>
       <button onclick="calcButton('0')">0</button>
-      <button onclick="calcButton('.')">.</button>
       <button onclick="calculate()">=</button>
       <button onclick="calcButton('/')">/</button>
+      <button onclick="calcButton('.')">.</button>
+      <button onclick="calcButton('C')">C</button>
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
-    // Helper Functions for opening and closing windows
     function openWindow(windowId) {
       document.getElementById(windowId).style.display = 'block';
+      document.getElementById('startMenu').style.display = 'none';
     }
 
     function closeWindow(windowId) {
       document.getElementById(windowId).style.display = 'none';
     }
 
-    // Draggable Window Logic
-    let dragItem = null;
-    const windows = document.querySelectorAll('.window');
-
-    windows.forEach((window) => {
-      const header = window.querySelector('.window-header');
-      header.addEventListener('mousedown', (e) => {
-        dragItem = window;
-        const offsetX = e.clientX - window.getBoundingClientRect().left;
-        const offsetY = e.clientY - window.getBoundingClientRect().top;
-
-        const mouseMoveHandler = (e) => {
-          dragItem.style.left = e.clientX - offsetX + 'px';
-          dragItem.style.top = e.clientY - offsetY + 'px';
-        };
-
-        const mouseUpHandler = () => {
-          document.removeEventListener('mousemove', mouseMoveHandler);
-          document.removeEventListener('mouseup', mouseUpHandler);
-        };
-
-        document.addEventListener('mousemove', mouseMoveHandler);
-        document.addEventListener('mouseup', mouseUpHandler);
-      });
-    });
-
-    // Task Manager Button
-    document.getElementById('taskManagerBtn').addEventListener('click', function() {
-      openWindow('taskManagerWindow');
-    });
-
-    // Calculator Button
-    document.getElementById('calculatorBtn').addEventListener('click', function() {
-      openWindow('calculatorWindow');
-    });
-
-    // Start Button (Menu Toggle)
-    document.getElementById('startBtn').addEventListener('click', function() {
-      const startMenu = document.getElementById('startMenu');
-      startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // Calculator Logic
-    let calcHistory = "";
-
     function calcButton(value) {
-      calcHistory += value;
-      document.getElementById('calcDisplay').value = calcHistory;
+      let calcDisplay = document.getElementById('calcDisplay');
+      if (value === 'C') {
+        calcDisplay.value = '';
+      } else {
+        calcDisplay.value += value;
+      }
     }
 
     function calculate() {
       try {
-        calcHistory = eval(calcHistory).toString();
-        document.getElementById('calcDisplay').value = calcHistory;
-      } catch (error) {
-        document.getElementById('calcDisplay').value = "Error";
+        let calcDisplay = document.getElementById('calcDisplay');
+        calcDisplay.value = eval(calcDisplay.value);
+      } catch (e) {
+        document.getElementById('calcDisplay').value = 'Error';
       }
     }
+
+    function updateDateTime() {
+      let date = new Date();
+      let dateString = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      let timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      document.getElementById('date').textContent = dateString;
+      document.getElementById('time').textContent = timeString;
+    }
+
+    function changeTabName() {
+      let newTabName = document.getElementById('changeTabName').value;
+      document.title = newTabName;
+    }
+
+    setInterval(updateDateTime, 1000);
+    updateDateTime(); // Update immediately on load
   </script>
+
 </body>
 </html>
