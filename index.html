@@ -4,7 +4,121 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Virexium Project Prototype</title>
-  <link rel="stylesheet" href="st.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #2d2d2d;
+    }
+
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      height: 40px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    #taskbar button {
+      background-color: #444;
+      color: white;
+      padding: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #taskbar button:hover {
+      background-color: #555;
+    }
+
+    #taskbar-right button {
+      padding: 0;
+    }
+
+    #taskbar-right img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .start-menu {
+      position: fixed;
+      bottom: 50px;
+      right: 10px;
+      background-color: #444;
+      border: 1px solid #222;
+      width: 150px;
+      padding: 10px;
+      z-index: 999;
+      border-radius: 5px;
+    }
+
+    .start-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .start-menu li {
+      margin-bottom: 10px;
+    }
+
+    .start-menu li button {
+      background-color: #333;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .start-menu li button:hover {
+      background-color: #555;
+    }
+
+    .window {
+      width: 400px;
+      height: 300px;
+      background-color: white;
+      border: 2px solid #333;
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .window-header {
+      background-color: #444;
+      color: white;
+      padding: 10px;
+      cursor: move;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-content {
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .close-btn {
+      background: none;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <div id="taskbar">
@@ -41,6 +155,78 @@
     </div>
   </div>
   
-  <script src="script.js"></script>
+  <script>
+    // Open Start Menu when clicking the start button
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const startMenu = document.getElementById('startMenu');
+      startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Close Start Menu when clicking outside of it
+    window.addEventListener('click', (e) => {
+      const startMenu = document.getElementById('startMenu');
+      if (!e.target.closest('#startMenu') && !e.target.closest('#startBtn')) {
+        startMenu.style.display = 'none';
+      }
+    });
+
+    // Open Task Manager when clicking the Task Manager button in Start Menu
+    document.getElementById('openTaskManager').addEventListener('click', () => {
+      openTaskManager();
+      document.getElementById('startMenu').style.display = 'none'; // Close Start Menu
+    });
+
+    // Open Task Manager window
+    function openTaskManager() {
+      document.getElementById('taskManager').style.display = 'block';
+      displayServices();
+      displayCookies();
+    }
+
+    // Close window function
+    function closeWindow(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // Display fake active services
+    function displayServices() {
+      const services = [
+        'Service 1 - Running',
+        'Service 2 - Stopped',
+        'Service 3 - Running'
+      ];
+
+      const servicesList = document.getElementById('servicesList');
+      servicesList.innerHTML = ''; // Clear existing list
+
+      services.forEach(service => {
+        const listItem = document.createElement('li');
+        listItem.textContent = service;
+        servicesList.appendChild(listItem);
+      });
+    }
+
+    // Display cookies from browser
+    function displayCookies() {
+      const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+      const cookiesList = document.getElementById('cookiesList');
+      cookiesList.innerHTML = ''; // Clear existing list
+
+      if (cookies.length === 0 || cookies[0] === '') {
+        cookiesList.innerHTML = '<li>No cookies found</li>';
+      } else {
+        cookies.forEach(cookie => {
+          const listItem = document.createElement('li');
+          listItem.textContent = cookie;
+          cookiesList.appendChild(listItem);
+        });
+      }
+    }
+
+    // Changeable start button icon (from imgur)
+    document.getElementById('startBtn').innerHTML = `
+      <img src="your-imgur-link-here" alt="Start Icon" id="startIcon">
+    `;
+  </script>
 </body>
 </html>
