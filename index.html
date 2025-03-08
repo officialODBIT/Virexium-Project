@@ -9,7 +9,8 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #2d2d2d;
+      background-color: #1e1e1e;
+      color: white;
     }
 
     #taskbar {
@@ -17,10 +18,10 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      background-color: #333;
       height: 40px;
+      background-color: #333;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
       align-items: center;
       padding: 0 10px;
     }
@@ -30,6 +31,7 @@
       color: white;
       padding: 8px;
       border: none;
+      margin-right: 10px;
       cursor: pointer;
     }
 
@@ -37,47 +39,37 @@
       background-color: #555;
     }
 
-    #taskbar-right button {
-      padding: 0;
-    }
-
-    #taskbar-right img {
-      width: 24px;
-      height: 24px;
-    }
-
-    .start-menu {
-      position: fixed;
+    #startMenu {
+      display: none;
+      position: absolute;
       bottom: 50px;
-      right: 10px;
+      left: 10px;
       background-color: #444;
-      border: 1px solid #222;
-      width: 150px;
       padding: 10px;
-      z-index: 999;
       border-radius: 5px;
+      width: 150px;
     }
 
-    .start-menu ul {
+    #startMenu ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
 
-    .start-menu li {
+    #startMenu li {
       margin-bottom: 10px;
     }
 
-    .start-menu li button {
+    #startMenu li button {
       background-color: #333;
       color: white;
       border: none;
+      padding: 8px;
       width: 100%;
-      padding: 10px;
       cursor: pointer;
     }
 
-    .start-menu li button:hover {
+    #startMenu li button:hover {
       background-color: #555;
     }
 
@@ -85,12 +77,14 @@
       width: 400px;
       height: 300px;
       background-color: white;
-      border: 2px solid #333;
-      position: absolute;
+      color: black;
+      position: fixed;
       top: 100px;
       left: 50%;
       transform: translateX(-50%);
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      display: none;
     }
 
     .window-header {
@@ -118,86 +112,163 @@
     .close-btn:hover {
       color: red;
     }
+
+    .settings-btn {
+      display: none;
+    }
+
+    .window input, .window select {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .window button {
+      padding: 8px;
+      margin: 8px 0;
+      border: none;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+    }
+
+    .window button:hover {
+      background-color: #555;
+    }
   </style>
 </head>
 <body>
   <div id="taskbar">
-    <div id="taskbar-left">
-      <!-- Empty, the start button is now on the right -->
-    </div>
-    <div id="taskbar-right">
-      <button id="startBtn">
-        <img src="your-imgur-link-here" alt="Start Icon" id="startIcon">
-      </button>
-    </div>
+    <button id="startBtn">Start Menu</button>
+    <button id="settingsBtn">Settings</button>
+    <button id="shellBtn">Shell</button>
+    <button id="servicesBtn">Services</button>
   </div>
-  
-  <div id="startMenu" class="start-menu" style="display: none;">
+
+  <!-- Start Menu -->
+  <div id="startMenu">
     <ul>
       <li><button id="openTaskManager">Task Manager</button></li>
     </ul>
   </div>
-  
-  <div id="taskManager" class="window" style="display: none;">
+
+  <!-- Settings App -->
+  <div id="settingsWindow" class="window">
     <div class="window-header">
-      <span>Task Manager</span>
-      <button class="close-btn" onclick="closeWindow('taskManager')">X</button>
+      <span>Settings</span>
+      <button class="close-btn" onclick="closeWindow('settingsWindow')">X</button>
+    </div>
+    <div class="window-content">
+      <h3>Background Change</h3>
+      <input type="color" id="bgColor" onchange="changeBackgroundColor()">
+      <h3>Change Tab Name</h3>
+      <input type="text" id="tabName" placeholder="New Tab Name" onchange="changeTabName()">
+      <h3>Cookies Management</h3>
+      <button onclick="showCookies()">Show Cookies</button>
+    </div>
+  </div>
+
+  <!-- Shell App -->
+  <div id="shellWindow" class="window">
+    <div class="window-header">
+      <span>Shell</span>
+      <button class="close-btn" onclick="closeWindow('shellWindow')">X</button>
+    </div>
+    <div class="window-content">
+      <h3>Shell Command</h3>
+      <textarea id="shellInput" rows="5" placeholder="Enter command..."></textarea>
+      <button onclick="executeShellCommand()">Execute</button>
+      <pre id="shellOutput"></pre>
+    </div>
+  </div>
+
+  <!-- Services App -->
+  <div id="servicesWindow" class="window">
+    <div class="window-header">
+      <span>Services</span>
+      <button class="close-btn" onclick="closeWindow('servicesWindow')">X</button>
     </div>
     <div class="window-content">
       <h3>Active Services</h3>
       <ul id="servicesList">
-        <!-- Services will be populated here -->
-      </ul>
-      <h3>Cookies</h3>
-      <ul id="cookiesList">
-        <!-- Cookies will be populated here -->
+        <!-- Services will be added here -->
       </ul>
     </div>
   </div>
-  
+
   <script>
-    // Open Start Menu when clicking the start button
+    // Start Menu
     document.getElementById('startBtn').addEventListener('click', () => {
       const startMenu = document.getElementById('startMenu');
       startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-    // Close Start Menu when clicking outside of it
-    window.addEventListener('click', (e) => {
-      const startMenu = document.getElementById('startMenu');
-      if (!e.target.closest('#startMenu') && !e.target.closest('#startBtn')) {
-        startMenu.style.display = 'none';
-      }
+    // Open Settings App
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+      openWindow('settingsWindow');
     });
 
-    // Open Task Manager when clicking the Task Manager button in Start Menu
-    document.getElementById('openTaskManager').addEventListener('click', () => {
-      openTaskManager();
-      document.getElementById('startMenu').style.display = 'none'; // Close Start Menu
+    // Open Shell App
+    document.getElementById('shellBtn').addEventListener('click', () => {
+      openWindow('shellWindow');
     });
 
-    // Open Task Manager window
-    function openTaskManager() {
-      document.getElementById('taskManager').style.display = 'block';
+    // Open Services App
+    document.getElementById('servicesBtn').addEventListener('click', () => {
+      openWindow('servicesWindow');
       displayServices();
-      displayCookies();
+    });
+
+    // Open Window
+    function openWindow(id) {
+      document.getElementById(id).style.display = 'block';
     }
 
-    // Close window function
+    // Close Window
     function closeWindow(id) {
       document.getElementById(id).style.display = 'none';
     }
 
-    // Display fake active services
+    // Background Color Change
+    function changeBackgroundColor() {
+      const color = document.getElementById('bgColor').value;
+      document.body.style.backgroundColor = color;
+    }
+
+    // Tab Name Change
+    function changeTabName() {
+      const newName = document.getElementById('tabName').value;
+      document.title = newName;
+    }
+
+    // Show Cookies
+    function showCookies() {
+      alert(document.cookie);
+    }
+
+    // Shell Command Execution
+    function executeShellCommand() {
+      const command = document.getElementById('shellInput').value;
+      const output = document.getElementById('shellOutput');
+      
+      // Simple shell simulation
+      if (command.toLowerCase() === 'echo hello') {
+        output.textContent = 'Hello, world!';
+      } else {
+        output.textContent = `Command not recognized: ${command}`;
+      }
+    }
+
+    // Services
     function displayServices() {
+      const servicesList = document.getElementById('servicesList');
       const services = [
         'Service 1 - Running',
         'Service 2 - Stopped',
         'Service 3 - Running'
       ];
-
-      const servicesList = document.getElementById('servicesList');
-      servicesList.innerHTML = ''; // Clear existing list
 
       services.forEach(service => {
         const listItem = document.createElement('li');
@@ -205,28 +276,6 @@
         servicesList.appendChild(listItem);
       });
     }
-
-    // Display cookies from browser
-    function displayCookies() {
-      const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-      const cookiesList = document.getElementById('cookiesList');
-      cookiesList.innerHTML = ''; // Clear existing list
-
-      if (cookies.length === 0 || cookies[0] === '') {
-        cookiesList.innerHTML = '<li>No cookies found</li>';
-      } else {
-        cookies.forEach(cookie => {
-          const listItem = document.createElement('li');
-          listItem.textContent = cookie;
-          cookiesList.appendChild(listItem);
-        });
-      }
-    }
-
-    // Changeable start button icon (from imgur)
-    document.getElementById('startBtn').innerHTML = `
-      <img src="your-imgur-link-here" alt="Start Icon" id="startIcon">
-    `;
   </script>
 </body>
 </html>
