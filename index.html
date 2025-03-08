@@ -9,7 +9,8 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #1e1e1e;
+      background-image: url('https://i.imgur.com/your-image-link.jpg');
+      background-size: cover;
       color: white;
       overflow: hidden;
     }
@@ -34,6 +35,8 @@
       padding: 8px;
       border: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
     }
 
     #taskbar button:hover {
@@ -180,12 +183,34 @@
     .taskbar-button:hover {
       background-color: #555;
     }
+
+    #startBtn {
+      background-image: url('https://i.imgur.com/your-icon-link.png');
+      background-size: cover;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Taskbar Right Buttons */
+    .system-tray button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
   <div id="taskbar">
     <div class="taskbar-buttons">
-      <button id="startBtn">Start Menu</button>
+      <button id="startBtn"></button>
       <button id="settingsBtn">Settings</button>
       <button id="shellBtn">Shell</button>
       <button id="servicesBtn">Services</button>
@@ -249,129 +274,177 @@
       <button class="close-btn" onclick="closeWindow('shellWindow')">X</button>
     </div>
     <div class="window-content">
-      <h3>Shell Command</h3>
-      <textarea id="shellInput" rows="5" placeholder="Enter command..."></textarea>
-      <button onclick="executeShellCommand()">Execute</button>
-      <pre id="shellOutput"></pre>
+      <input type="text" placeholder="Type a command..." id="shellInput">
+      <div id="shellOutput"></div>
     </div>
   </div>
 
-  <!-- Services App -->
-  <div id="servicesWindow" class="window">
+  <!-- Task Manager App -->
+  <div id="taskManagerWindow" class="window">
     <div class="window-header">
-      <span>Services</span>
-      <button class="close-btn" onclick="closeWindow('servicesWindow')">X</button>
+      <span>Task Manager</span>
+      <button class="close-btn" onclick="closeWindow('taskManagerWindow')">X</button>
     </div>
     <div class="window-content">
-      <h3>Active Services</h3>
-      <ul id="servicesList">
-        <!-- Services will be added here -->
+      <h3>Running Apps:</h3>
+      <ul id="taskList">
+        <!-- Task List will appear here -->
       </ul>
     </div>
   </div>
 
+  <!-- Calculator App -->
+  <div id="calculatorWindow" class="window">
+    <div class="window-header">
+      <span>Calculator</span>
+      <button class="close-btn" onclick="closeWindow('calculatorWindow')">X</button>
+    </div>
+    <div class="window-content">
+      <input type="text" id="calcDisplay" disabled>
+      <div>
+        <button onclick="calcButton('7')">7</button>
+        <button onclick="calcButton('8')">8</button>
+        <button onclick="calcButton('9')">9</button>
+        <button onclick="calcButton('/')">/</button>
+      </div>
+      <div>
+        <button onclick="calcButton('4')">4</button>
+        <button onclick="calcButton('5')">5</button>
+        <button onclick="calcButton('6')">6</button>
+        <button onclick="calcButton('*')">*</button>
+      </div>
+      <div>
+        <button onclick="calcButton('1')">1</button>
+        <button onclick="calcButton('2')">2</button>
+        <button onclick="calcButton('3')">3</button>
+        <button onclick="calcButton('-')">-</button>
+      </div>
+      <div>
+        <button onclick="calcButton('0')">0</button>
+        <button onclick="calcButton('.')">.</button>
+        <button onclick="calcButton('+')">+</button>
+        <button onclick="calculate()">=</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Start Menu
-    document.getElementById('startBtn').addEventListener('click', () => {
-      const startMenu = document.getElementById('startMenu');
-      startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // Open Settings App
-    document.getElementById('settingsBtn').addEventListener('click', () => {
-      openWindow('settingsWindow');
-    });
-
-    // Open Shell App
-    document.getElementById('shellBtn').addEventListener('click', () => {
-      openWindow('shellWindow');
-    });
-
-    // Open Services App
-    document.getElementById('servicesBtn').addEventListener('click', () => {
-      openWindow('servicesWindow');
-      displayServices();
-    });
-
-    // Open Other Apps
-    document.getElementById('openTaskManager').addEventListener('click', () => {
-      alert('Task Manager is opening...');
-    });
-    document.getElementById('openCalculator').addEventListener('click', () => {
-      alert('Calculator is opening...');
-    });
-    document.getElementById('openNotepad').addEventListener('click', () => {
-      alert('Notepad is opening...');
-    });
-    document.getElementById('openBrowser').addEventListener('click', () => {
-      alert('Browser is opening...');
-    });
-    document.getElementById('openExplorer').addEventListener('click', () => {
-      alert('Explorer is opening...');
-    });
-
-    // Open Window
+    // Add your JavaScript functions here
+    let currentWindow = null;
+    let calcHistory = "";
+    
     function openWindow(id) {
-      document.getElementById(id).style.display = 'block';
+      if (currentWindow) {
+        closeWindow(currentWindow);
+      }
+      currentWindow = id;
+      document.getElementById(id).style.display = "block";
     }
 
-    // Close Window
     function closeWindow(id) {
-      document.getElementById(id).style.display = 'none';
+      document.getElementById(id).style.display = "none";
     }
 
-    // Background Color Change
+    function openTaskManager() {
+      openWindow('taskManagerWindow');
+      document.getElementById('taskList').innerHTML = "<li>Example Task 1</li><li>Example Task 2</li>";
+    }
+
+    function openCalculator() {
+      openWindow('calculatorWindow');
+    }
+
+    function calcButton(value) {
+      calcHistory += value;
+      document.getElementById('calcDisplay').value = calcHistory;
+    }
+
+    function calculate() {
+      try {
+        calcHistory = eval(calcHistory).toString();
+        document.getElementById('calcDisplay').value = calcHistory;
+      } catch (error) {
+        document.getElementById('calcDisplay').value = "Error";
+      }
+    }
+
+    function openNotepad() {
+      openWindow('notepadWindow');
+    }
+
+    function openExplorer() {
+      openWindow('explorerWindow');
+    }
+
+    function openTextEditor() {
+      openWindow('textEditorWindow');
+    }
+
+    function openMediaPlayer() {
+      openWindow('mediaPlayerWindow');
+    }
+
+    function openFileManager() {
+      openWindow('fileManagerWindow');
+    }
+
+    function openControlPanel() {
+      openWindow('controlPanelWindow');
+    }
+
+    function openTerminal() {
+      openWindow('terminalWindow');
+    }
+
+    function openNotes() {
+      openWindow('notesWindow');
+    }
+
+    function openCalendar() {
+      openWindow('calendarWindow');
+    }
+
+    function openContacts() {
+      openWindow('contactsWindow');
+    }
+
+    function openTaskScheduler() {
+      openWindow('taskSchedulerWindow');
+    }
+
+    function openHelp() {
+      openWindow('helpWindow');
+    }
+
     function changeBackgroundColor() {
       const color = document.getElementById('bgColor').value;
       document.body.style.backgroundColor = color;
     }
 
-    // Tab Name Change
     function changeTabName() {
-      const newName = document.getElementById('tabName').value;
-      document.title = newName;
+      const name = document.getElementById('tabName').value;
+      document.title = name;
     }
 
-    // Change Font Size
     function changeFontSize() {
-      const fontSize = document.getElementById('fontSize').value;
-      document.body.style.fontSize = fontSize;
+      const size = document.getElementById('fontSize').value;
+      document.body.style.fontSize = size;
     }
 
-    // Change Theme
     function changeTheme() {
-      document.body.style.backgroundColor = '#222';
-      document.body.style.color = '#ccc';
+      document.body.style.backgroundColor = "#222";
+      document.body.style.color = "#ddd";
     }
+    
+    // Start Menu button actions
+    document.getElementById("startBtn").addEventListener("click", function() {
+      document.getElementById("startMenu").style.display = "block";
+    });
 
-    // Shell Command Execution
-    function executeShellCommand() {
-      const command = document.getElementById('shellInput').value;
-      const output = document.getElementById('shellOutput');
-      
-      // Simple shell simulation
-      if (command.toLowerCase() === 'echo hello') {
-        output.textContent = 'Hello, world!';
-      } else {
-        output.textContent = `Command not recognized: ${command}`;
-      }
-    }
+    document.getElementById("openTaskManager").addEventListener("click", openTaskManager);
+    document.getElementById("openCalculator").addEventListener("click", openCalculator);
 
-    // Services
-    function displayServices() {
-      const servicesList = document.getElementById('servicesList');
-      const services = [
-        'Service 1 - Running',
-        'Service 2 - Stopped',
-        'Service 3 - Running'
-      ];
-
-      services.forEach(service => {
-        const listItem = document.createElement('li');
-        listItem.textContent = service;
-        servicesList.appendChild(listItem);
-      });
-    }
+    // And the rest of the buttons...
   </script>
 </body>
 </html>
