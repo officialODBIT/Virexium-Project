@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Virexium Project Prototype</title>
+  <title>ChromeOS Style UI</title>
   <style>
+    /* Global Styles */
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-image: url('https://i.imgur.com/your-image-link.jpg');
-      background-size: cover;
-      color: white;
+      background-color: #fafafa;
+      font-family: Arial, sans-serif;
       overflow: hidden;
     }
 
+    /* Taskbar */
     #taskbar {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 40px;
+      height: 48px;
       background-color: #333;
       display: flex;
       justify-content: space-between;
@@ -29,80 +29,79 @@
       z-index: 100;
     }
 
-    #taskbar button {
-      background-color: #444;
-      color: white;
-      padding: 8px;
-      border: none;
-      cursor: pointer;
+    #taskbar .taskbar-left, #taskbar .taskbar-right {
       display: flex;
       align-items: center;
     }
 
+    #taskbar .taskbar-left button, #taskbar .taskbar-right button {
+      background-color: transparent;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      color: white;
+      font-size: 16px;
+    }
+
     #taskbar button:hover {
       background-color: #555;
+      border-radius: 5px;
     }
 
-    .taskbar-buttons {
-      display: flex;
-      gap: 10px;
+    #taskbar .taskbar-left button img, #taskbar .taskbar-right button img {
+      width: 24px;
+      height: 24px;
     }
 
-    .system-tray {
-      display: flex;
-      gap: 5px;
-    }
-
+    /* Start Menu */
     #startMenu {
-      display: none;
       position: absolute;
-      bottom: 50px;
+      bottom: 60px;
       left: 10px;
       background-color: #444;
+      width: 220px;
+      border-radius: 8px;
+      display: none;
       padding: 10px;
-      border-radius: 5px;
-      width: 200px;
+      z-index: 1000;
     }
 
-    #startMenu ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    #startMenu li {
-      margin-bottom: 10px;
-    }
-
-    #startMenu li button {
+    #startMenu button {
       background-color: #333;
       color: white;
-      border: none;
-      padding: 8px;
       width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
+      margin-bottom: 8px;
+      text-align: left;
     }
 
-    #startMenu li button:hover {
+    #startMenu button:hover {
       background-color: #555;
     }
 
+    /* Window Styles */
     .window {
       width: 400px;
       height: 300px;
       background-color: white;
       color: black;
-      position: fixed;
-      top: 100px;
+      position: absolute;
+      top: 50px;
       left: 50%;
       transform: translateX(-50%);
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
       border-radius: 5px;
+      display: none;
+      z-index: 2000;
+      overflow: hidden;
       display: none;
     }
 
     .window-header {
-      background-color: #444;
+      background-color: #333;
       color: white;
       padding: 10px;
       cursor: move;
@@ -113,6 +112,7 @@
 
     .window-content {
       padding: 10px;
+      height: calc(100% - 40px);
       overflow-y: auto;
     }
 
@@ -127,232 +127,144 @@
       color: red;
     }
 
-    .settings-btn {
-      display: none;
+    /* Draggable Windows */
+    .draggable {
+      cursor: move;
     }
 
-    .window input, .window select, .window textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+    /* Apps */
+    #taskManagerWindow, #calculatorWindow {
+      width: 300px;
     }
 
-    .window button {
-      padding: 8px;
-      margin: 8px 0;
-      border: none;
-      background-color: #444;
-      color: white;
-      cursor: pointer;
+    /* Icons in Taskbar */
+    .taskbar-left button img {
+      width: 24px;
+      height: 24px;
     }
 
-    .window button:hover {
-      background-color: #555;
-    }
-
-    #settingsWindow {
-      width: 500px;
-      height: 500px;
-      overflow-y: auto;
-      display: none;
-    }
-
-    #settingsWindow h3 {
-      margin-top: 20px;
-    }
-
-    #settingsWindow input {
-      width: 70%;
-    }
-
-    .scrollable {
-      height: 400px;
-      overflow-y: scroll;
-    }
-
-    .taskbar-button {
-      background-color: #444;
-      color: white;
-      padding: 10px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .taskbar-button:hover {
-      background-color: #555;
-    }
-
-    #startBtn {
-      background-image: url('https://i.imgur.com/your-icon-link.png');
-      background-size: cover;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-    }
-
-    /* Taskbar Right Buttons */
-    .system-tray button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: #555;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   </style>
 </head>
 <body>
+
+  <!-- Taskbar -->
   <div id="taskbar">
-    <div class="taskbar-buttons">
-      <button id="startBtn"></button>
-      <button id="settingsBtn">Settings</button>
-      <button id="shellBtn">Shell</button>
-      <button id="servicesBtn">Services</button>
+    <div class="taskbar-left">
+      <button id="startBtn"><img src="https://i.imgur.com/your-icon-link.png" alt="Start Menu"></button>
+      <button id="taskManagerBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/task.png" alt="Task Manager"></button>
+      <button id="calculatorBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/calculator.png" alt="Calculator"></button>
     </div>
-    <div class="system-tray">
-      <button id="networkBtn">Network</button>
-      <button id="batteryBtn">Battery</button>
-      <button id="clockBtn">Time</button>
+    <div class="taskbar-right">
+      <button id="networkBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/network.png" alt="Network"></button>
+      <button id="batteryBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/battery.png" alt="Battery"></button>
+      <button id="clockBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/clock.png" alt="Clock"></button>
     </div>
   </div>
 
   <!-- Start Menu -->
   <div id="startMenu">
-    <ul>
-      <li><button id="openTaskManager">Task Manager</button></li>
-      <li><button id="openCalculator">Calculator</button></li>
-      <li><button id="openNotepad">Notepad</button></li>
-      <li><button id="openBrowser">Browser</button></li>
-      <li><button id="openExplorer">Explorer</button></li>
-      <li><button id="openTextEditor">Text Editor</button></li>
-      <li><button id="openMediaPlayer">Media Player</button></li>
-      <li><button id="openFileManager">File Manager</button></li>
-      <li><button id="openControlPanel">Control Panel</button></li>
-      <li><button id="openTerminal">Terminal</button></li>
-      <li><button id="openNotes">Notes</button></li>
-      <li><button id="openCalendar">Calendar</button></li>
-      <li><button id="openContacts">Contacts</button></li>
-      <li><button id="openTaskScheduler">Task Scheduler</button></li>
-      <li><button id="openHelp">Help</button></li>
-    </ul>
+    <button onclick="openWindow('taskManagerWindow')">Task Manager</button>
+    <button onclick="openWindow('calculatorWindow')">Calculator</button>
+    <button onclick="openWindow('settingsWindow')">Settings</button>
+    <!-- Add more buttons for apps here -->
   </div>
 
-  <!-- Settings App -->
-  <div id="settingsWindow" class="window">
-    <div class="window-header">
-      <span>Settings</span>
-      <button class="close-btn" onclick="closeWindow('settingsWindow')">X</button>
-    </div>
-    <div class="window-content scrollable">
-      <h3>Background Change</h3>
-      <input type="color" id="bgColor" onchange="changeBackgroundColor()">
-      <h3>Change Tab Name</h3>
-      <input type="text" id="tabName" placeholder="New Tab Name" onchange="changeTabName()">
-      <h3>Font Size</h3>
-      <select id="fontSize" onchange="changeFontSize()">
-        <option value="14px">14px</option>
-        <option value="16px">16px</option>
-        <option value="18px">18px</option>
-        <option value="20px">20px</option>
-        <option value="22px">22px</option>
-      </select>
-      <h3>System Theme</h3>
-      <button onclick="changeTheme()">Switch to Dark Mode</button>
-    </div>
-  </div>
-
-  <!-- Shell App -->
-  <div id="shellWindow" class="window">
-    <div class="window-header">
-      <span>Shell</span>
-      <button class="close-btn" onclick="closeWindow('shellWindow')">X</button>
-    </div>
-    <div class="window-content">
-      <input type="text" placeholder="Type a command..." id="shellInput">
-      <div id="shellOutput"></div>
-    </div>
-  </div>
-
-  <!-- Task Manager App -->
+  <!-- Task Manager Window -->
   <div id="taskManagerWindow" class="window">
-    <div class="window-header">
+    <div class="window-header draggable">
       <span>Task Manager</span>
       <button class="close-btn" onclick="closeWindow('taskManagerWindow')">X</button>
     </div>
     <div class="window-content">
-      <h3>Running Apps:</h3>
-      <ul id="taskList">
-        <!-- Task List will appear here -->
+      <ul>
+        <li>Example Task 1</li>
+        <li>Example Task 2</li>
+        <li>Example Task 3</li>
       </ul>
     </div>
   </div>
 
-  <!-- Calculator App -->
+  <!-- Calculator Window -->
   <div id="calculatorWindow" class="window">
-    <div class="window-header">
+    <div class="window-header draggable">
       <span>Calculator</span>
       <button class="close-btn" onclick="closeWindow('calculatorWindow')">X</button>
     </div>
     <div class="window-content">
-      <input type="text" id="calcDisplay" disabled>
-      <div>
-        <button onclick="calcButton('7')">7</button>
-        <button onclick="calcButton('8')">8</button>
-        <button onclick="calcButton('9')">9</button>
-        <button onclick="calcButton('/')">/</button>
-      </div>
-      <div>
-        <button onclick="calcButton('4')">4</button>
-        <button onclick="calcButton('5')">5</button>
-        <button onclick="calcButton('6')">6</button>
-        <button onclick="calcButton('*')">*</button>
-      </div>
-      <div>
-        <button onclick="calcButton('1')">1</button>
-        <button onclick="calcButton('2')">2</button>
-        <button onclick="calcButton('3')">3</button>
-        <button onclick="calcButton('-')">-</button>
-      </div>
-      <div>
-        <button onclick="calcButton('0')">0</button>
-        <button onclick="calcButton('.')">.</button>
-        <button onclick="calcButton('+')">+</button>
-        <button onclick="calculate()">=</button>
-      </div>
+      <input type="text" id="calcDisplay" disabled />
+      <button onclick="calcButton('1')">1</button>
+      <button onclick="calcButton('2')">2</button>
+      <button onclick="calcButton('3')">3</button>
+      <button onclick="calcButton('+')">+</button>
+      <button onclick="calcButton('4')">4</button>
+      <button onclick="calcButton('5')">5</button>
+      <button onclick="calcButton('6')">6</button>
+      <button onclick="calcButton('-')">-</button>
+      <button onclick="calcButton('7')">7</button>
+      <button onclick="calcButton('8')">8</button>
+      <button onclick="calcButton('9')">9</button>
+      <button onclick="calcButton('*')">*</button>
+      <button onclick="calcButton('0')">0</button>
+      <button onclick="calcButton('.')">.</button>
+      <button onclick="calculate()">=</button>
+      <button onclick="calcButton('/')">/</button>
     </div>
   </div>
 
   <script>
-    // Add your JavaScript functions here
-    let currentWindow = null;
-    let calcHistory = "";
-    
-    function openWindow(id) {
-      if (currentWindow) {
-        closeWindow(currentWindow);
-      }
-      currentWindow = id;
-      document.getElementById(id).style.display = "block";
+    // Helper Functions for opening and closing windows
+    function openWindow(windowId) {
+      document.getElementById(windowId).style.display = 'block';
     }
 
-    function closeWindow(id) {
-      document.getElementById(id).style.display = "none";
+    function closeWindow(windowId) {
+      document.getElementById(windowId).style.display = 'none';
     }
 
-    function openTaskManager() {
+    // Draggable Window Logic
+    let dragItem = null;
+    const windows = document.querySelectorAll('.window');
+
+    windows.forEach((window) => {
+      const header = window.querySelector('.window-header');
+      header.addEventListener('mousedown', (e) => {
+        dragItem = window;
+        const offsetX = e.clientX - window.getBoundingClientRect().left;
+        const offsetY = e.clientY - window.getBoundingClientRect().top;
+
+        const mouseMoveHandler = (e) => {
+          dragItem.style.left = e.clientX - offsetX + 'px';
+          dragItem.style.top = e.clientY - offsetY + 'px';
+        };
+
+        const mouseUpHandler = () => {
+          document.removeEventListener('mousemove', mouseMoveHandler);
+          document.removeEventListener('mouseup', mouseUpHandler);
+        };
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
+      });
+    });
+
+    // Task Manager Button
+    document.getElementById('taskManagerBtn').addEventListener('click', function() {
       openWindow('taskManagerWindow');
-      document.getElementById('taskList').innerHTML = "<li>Example Task 1</li><li>Example Task 2</li>";
-    }
+    });
 
-    function openCalculator() {
+    // Calculator Button
+    document.getElementById('calculatorBtn').addEventListener('click', function() {
       openWindow('calculatorWindow');
-    }
+    });
+
+    // Start Button (Menu Toggle)
+    document.getElementById('startBtn').addEventListener('click', function() {
+      const startMenu = document.getElementById('startMenu');
+      startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Calculator Logic
+    let calcHistory = "";
 
     function calcButton(value) {
       calcHistory += value;
@@ -367,85 +279,6 @@
         document.getElementById('calcDisplay').value = "Error";
       }
     }
-
-    function openNotepad() {
-      openWindow('notepadWindow');
-    }
-
-    function openExplorer() {
-      openWindow('explorerWindow');
-    }
-
-    function openTextEditor() {
-      openWindow('textEditorWindow');
-    }
-
-    function openMediaPlayer() {
-      openWindow('mediaPlayerWindow');
-    }
-
-    function openFileManager() {
-      openWindow('fileManagerWindow');
-    }
-
-    function openControlPanel() {
-      openWindow('controlPanelWindow');
-    }
-
-    function openTerminal() {
-      openWindow('terminalWindow');
-    }
-
-    function openNotes() {
-      openWindow('notesWindow');
-    }
-
-    function openCalendar() {
-      openWindow('calendarWindow');
-    }
-
-    function openContacts() {
-      openWindow('contactsWindow');
-    }
-
-    function openTaskScheduler() {
-      openWindow('taskSchedulerWindow');
-    }
-
-    function openHelp() {
-      openWindow('helpWindow');
-    }
-
-    function changeBackgroundColor() {
-      const color = document.getElementById('bgColor').value;
-      document.body.style.backgroundColor = color;
-    }
-
-    function changeTabName() {
-      const name = document.getElementById('tabName').value;
-      document.title = name;
-    }
-
-    function changeFontSize() {
-      const size = document.getElementById('fontSize').value;
-      document.body.style.fontSize = size;
-    }
-
-    function changeTheme() {
-      document.body.style.backgroundColor = "#222";
-      document.body.style.color = "#ddd";
-    }
-    
-    // Start Menu button actions
-    document.getElementById("startBtn").addEventListener("click", function() {
-      document.getElementById("startMenu").style.display = "block";
-    });
-
-    document.getElementById("openTaskManager").addEventListener("click", openTaskManager);
-    document.getElementById("openCalculator").addEventListener("click", openCalculator);
-
-    // And the rest of the buttons...
-    console.warn('loaded v1')
   </script>
 </body>
 </html>
