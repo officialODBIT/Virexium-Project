@@ -3,23 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Virexium Project</title>
-  <link rel="stylesheet" href="st.css">
+  <title>Virexium Project Prototype</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="taskbar">
-    <button id="startBtn">Start</button>
+    <div id="taskbar-left">
+      <!-- Empty, the start button is now on the right -->
+    </div>
+    <div id="taskbar-right">
+      <button id="startBtn">
+        <img src="your-imgur-link-here" alt="Start Icon" id="startIcon">
+      </button>
+    </div>
   </div>
   
-  <div id="desktop">
-    <div class="window" id="window1">
-      <div class="window-header">
-        <span>VirexiumWin</span>
-        <button class="close-btn">X</button>
-      </div>
-      <div class="window-content">
-        <p>Test</p>
-      </div>
+  <div id="startMenu" class="start-menu" style="display: none;">
+    <ul>
+      <li><button id="openTaskManager">Task Manager</button></li>
+    </ul>
+  </div>
+  
+  <div id="taskManager" class="window" style="display: none;">
+    <div class="window-header">
+      <span>Task Manager</span>
+      <button class="close-btn" onclick="closeWindow('taskManager')">X</button>
+    </div>
+    <div class="window-content">
+      <h3>Active Services</h3>
+      <ul id="servicesList">
+        <!-- Services will be populated here -->
+      </ul>
+      <h3>Cookies</h3>
+      <ul id="cookiesList">
+        <!-- Cookies will be populated here -->
+      </ul>
     </div>
   </div>
   
