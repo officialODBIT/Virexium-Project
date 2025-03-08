@@ -11,6 +11,7 @@
       padding: 0;
       background-color: #1e1e1e;
       color: white;
+      overflow: hidden;
     }
 
     #taskbar {
@@ -21,9 +22,10 @@
       height: 40px;
       background-color: #333;
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
       padding: 0 10px;
+      z-index: 100;
     }
 
     #taskbar button {
@@ -31,12 +33,21 @@
       color: white;
       padding: 8px;
       border: none;
-      margin-right: 10px;
       cursor: pointer;
     }
 
     #taskbar button:hover {
       background-color: #555;
+    }
+
+    .taskbar-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .system-tray {
+      display: flex;
+      gap: 5px;
     }
 
     #startMenu {
@@ -47,7 +58,7 @@
       background-color: #444;
       padding: 10px;
       border-radius: 5px;
-      width: 150px;
+      width: 200px;
     }
 
     #startMenu ul {
@@ -117,7 +128,7 @@
       display: none;
     }
 
-    .window input, .window select {
+    .window input, .window select, .window textarea {
       width: 100%;
       padding: 8px;
       margin: 8px 0;
@@ -137,20 +148,73 @@
     .window button:hover {
       background-color: #555;
     }
+
+    #settingsWindow {
+      width: 500px;
+      height: 500px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    #settingsWindow h3 {
+      margin-top: 20px;
+    }
+
+    #settingsWindow input {
+      width: 70%;
+    }
+
+    .scrollable {
+      height: 400px;
+      overflow-y: scroll;
+    }
+
+    .taskbar-button {
+      background-color: #444;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .taskbar-button:hover {
+      background-color: #555;
+    }
   </style>
 </head>
 <body>
   <div id="taskbar">
-    <button id="startBtn">Start Menu</button>
-    <button id="settingsBtn">Settings</button>
-    <button id="shellBtn">Shell</button>
-    <button id="servicesBtn">Services</button>
+    <div class="taskbar-buttons">
+      <button id="startBtn">Start Menu</button>
+      <button id="settingsBtn">Settings</button>
+      <button id="shellBtn">Shell</button>
+      <button id="servicesBtn">Services</button>
+    </div>
+    <div class="system-tray">
+      <button id="networkBtn">Network</button>
+      <button id="batteryBtn">Battery</button>
+      <button id="clockBtn">Time</button>
+    </div>
   </div>
 
   <!-- Start Menu -->
   <div id="startMenu">
     <ul>
       <li><button id="openTaskManager">Task Manager</button></li>
+      <li><button id="openCalculator">Calculator</button></li>
+      <li><button id="openNotepad">Notepad</button></li>
+      <li><button id="openBrowser">Browser</button></li>
+      <li><button id="openExplorer">Explorer</button></li>
+      <li><button id="openTextEditor">Text Editor</button></li>
+      <li><button id="openMediaPlayer">Media Player</button></li>
+      <li><button id="openFileManager">File Manager</button></li>
+      <li><button id="openControlPanel">Control Panel</button></li>
+      <li><button id="openTerminal">Terminal</button></li>
+      <li><button id="openNotes">Notes</button></li>
+      <li><button id="openCalendar">Calendar</button></li>
+      <li><button id="openContacts">Contacts</button></li>
+      <li><button id="openTaskScheduler">Task Scheduler</button></li>
+      <li><button id="openHelp">Help</button></li>
     </ul>
   </div>
 
@@ -160,13 +224,21 @@
       <span>Settings</span>
       <button class="close-btn" onclick="closeWindow('settingsWindow')">X</button>
     </div>
-    <div class="window-content">
+    <div class="window-content scrollable">
       <h3>Background Change</h3>
       <input type="color" id="bgColor" onchange="changeBackgroundColor()">
       <h3>Change Tab Name</h3>
       <input type="text" id="tabName" placeholder="New Tab Name" onchange="changeTabName()">
-      <h3>Cookies Management</h3>
-      <button onclick="showCookies()">Show Cookies</button>
+      <h3>Font Size</h3>
+      <select id="fontSize" onchange="changeFontSize()">
+        <option value="14px">14px</option>
+        <option value="16px">16px</option>
+        <option value="18px">18px</option>
+        <option value="20px">20px</option>
+        <option value="22px">22px</option>
+      </select>
+      <h3>System Theme</h3>
+      <button onclick="changeTheme()">Switch to Dark Mode</button>
     </div>
   </div>
 
@@ -221,6 +293,23 @@
       displayServices();
     });
 
+    // Open Other Apps
+    document.getElementById('openTaskManager').addEventListener('click', () => {
+      alert('Task Manager is opening...');
+    });
+    document.getElementById('openCalculator').addEventListener('click', () => {
+      alert('Calculator is opening...');
+    });
+    document.getElementById('openNotepad').addEventListener('click', () => {
+      alert('Notepad is opening...');
+    });
+    document.getElementById('openBrowser').addEventListener('click', () => {
+      alert('Browser is opening...');
+    });
+    document.getElementById('openExplorer').addEventListener('click', () => {
+      alert('Explorer is opening...');
+    });
+
     // Open Window
     function openWindow(id) {
       document.getElementById(id).style.display = 'block';
@@ -243,9 +332,16 @@
       document.title = newName;
     }
 
-    // Show Cookies
-    function showCookies() {
-      alert(document.cookie);
+    // Change Font Size
+    function changeFontSize() {
+      const fontSize = document.getElementById('fontSize').value;
+      document.body.style.fontSize = fontSize;
+    }
+
+    // Change Theme
+    function changeTheme() {
+      document.body.style.backgroundColor = '#222';
+      document.body.style.color = '#ccc';
     }
 
     // Shell Command Execution
